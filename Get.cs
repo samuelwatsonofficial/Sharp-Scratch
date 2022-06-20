@@ -1,7 +1,7 @@
 using System.Collections;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using SrAtCh;
-using static SrAtCh.JsonClass;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -16,12 +16,12 @@ public class Get
     private static JsonNode json = JsonObject.Parse(temp);
     
 
-    public static List<dynamic> Getvariables(int i)
+    public static List<dynamic> Variables(int i)
     {
         var dynlist= new List<dynamic>();
         
-        Console.WriteLine(i.ToString()+" "+bool.Parse(json["targets"].AsArray()[i]["isStage"].ToString()));
-        Console.WriteLine(i.ToString()+" "+(((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray().Length == 0).ToString());
+        //Console.WriteLine(i.ToString()+" "+bool.Parse(json["targets"].AsArray()[i]["isStage"].ToString()));
+        //Console.WriteLine(i.ToString()+" "+(((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray().Length == 0).ToString());
         if (((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray().Length != 0 && !bool.Parse(json["targets"].AsArray()[i]["isStage"].ToString()))
         {
             for (int x = 0; x < ((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray().Length; x++)
@@ -79,7 +79,7 @@ public class Get
         return dynlist;
     }
 
-    public static string GetName(int i)
+    public static string Name(int i)
     {
         string name = (json["targets"][i]["name"]).ToString();
         Console.WriteLine("name: "+(json["targets"][i]["name"]).ToString());
@@ -97,27 +97,7 @@ public class Get
                 Console.WriteLine(json["targets"][i]["costumes"][x]["name"].ToString());
                 costumeList.Add(new Asset.Costume());
                 costumeList[costumeList.Count-1].assetId=json["targets"][i]["costumes"][x]["assetId"].ToString();
-                /*
-                if (json["targets"][i]["costumes"][x]["dataFormat"].ToString() == "svg")
-                {
-                    var svgDocument = SvgDocument.Open(@"./extract/"+costumeList[costumeList.Count-1].assetId+".svg");
-                    using (var smallBitmap = svgDocument.Draw())
-                    {
-                        var width = smallBitmap.Width;
-                        var height = smallBitmap.Height;
-                        if (width != 2000)// I resize my bitmap
-                        {
-                            width = 2000;
-                            height = 2000/smallBitmap.Width*height;
-                        }
-
-                        using (var bitmap = svgDocument.Draw(width, height))//I render again
-                        {
-                            bitmap.Save(costumeList.name+".png", ImageFormat.Png);
-                        }
-                    }
-                }
-                */
+                
                 costumeList[costumeList.Count-1].name=json["targets"][i]["costumes"][x]["name"].ToString();
                 costumeList[costumeList.Count-1].rotationCentreX=float.Parse(json["targets"][i]["costumes"][x]["rotationCenterX"].ToString());
                 costumeList[costumeList.Count-1].rotationCentreY=float.Parse(json["targets"][i]["costumes"][x]["rotationCenterX"].ToString());
@@ -133,5 +113,11 @@ public class Get
         }
 
         return costumeList;
+    }
+
+    public static string CropJson(string input)
+    {
+        
+        return "";
     }
 }

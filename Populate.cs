@@ -1,5 +1,5 @@
+using System.Diagnostics;
 using SrAtCh;
-using static SrAtCh.JsonClass;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -12,6 +12,7 @@ namespace SrAtCh;
 
 public class Populate
 {
+    
     private static string temp = File.ReadAllText(@"./extract/project.json");
     private static JsonNode json = JsonObject.Parse(temp);
 
@@ -24,7 +25,7 @@ public class Populate
         {
             if (stageFound && bool.Parse(json["targets"].AsArray()[i]["isStage"].ToString()))
             {
-                break;
+                continue;
             }
 
             if (bool.Parse(json["targets"].AsArray()[i]["isStage"].ToString()))
@@ -37,36 +38,29 @@ public class Populate
             {
                 for (int x = 0; x < ((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray().Length; x++)
                 {
-                    try
+                    bool tryFloat = float.TryParse(((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray()[x].Value[1]
+                        .ToString(),out float tempFloat);
+                    if (tryFloat)
                     {
-                        Console.WriteLine(float.Parse(
-                            ((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray()[x].Value[1]
-                            .ToString()));
                         publicVariableNames.Add(
                             ((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray()[x].Value[0]
                             .ToString().Replace(" ", "_"));
-                        publicVariables.Add(float.Parse(
-                            ((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray()[x].Value[1]
-                            .ToString()));
+                        publicVariables.Add(tempFloat);
                     }
-                    catch (Exception e)
+                    else
                     {
-                        //Console.WriteLine(e);
-                        try
+                        bool tryBool = Boolean.TryParse(
+                            ((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray()[x].Value[1]
+                            .ToString(),out bool tempBool);
+                        if (tryBool)
                         {
-                            Console.WriteLine(Boolean.Parse(
-                                ((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray()[x].Value[1]
-                                .ToString()));
                             publicVariableNames.Add(
                                 ((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray()[x].Value[0]
                                 .ToString().Replace(" ", "_"));
-                            publicVariables.Add(bool.Parse(
-                                ((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray()[x].Value[1]
-                                .ToString()));
+                            publicVariables.Add(tempBool);
                         }
-                        catch (Exception exception)
+                        else
                         {
-                            //Console.WriteLine(exception);
                             publicVariableNames.Add(
                                 ((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray()[x].Value[0]
                                 .ToString().Replace(" ", "_"));
@@ -75,18 +69,20 @@ public class Populate
                                 .ToString());
                         }
                     }
+                    
 
                     Console.WriteLine("variablenaem: " +
-                                      ((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray()[x].Value[1]
+                                      ((JsonObject)json["targets"][i]["variables"]).AsEnumerable().ToArray()[x].Value[0]
                                       .ToString());
                 }
 
                 return (publicVariables, publicVariableNames);
             }
-            /**/
+            return (null, null);    
         }
-
+        //the program should never get here 
         Console.WriteLine("!!!!!!!!!!!EMPTY!!!!!!!!!!!");
+        Environment.Exit(0);
         return (null, null);
     }
 
