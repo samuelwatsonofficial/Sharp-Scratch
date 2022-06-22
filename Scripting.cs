@@ -44,6 +44,7 @@ public class Scripting
     {
         //the string optype is the part of the string before the character '_' which spesifies what type the opcode is
         string optype = input.Substring(0, input.IndexOf("_")); 
+        //the string optype2 is the part of the string after the character '_' which spesifies what type the secondary opcode is
         string optype2 = input.Substring(input.IndexOf("_"), input.Length);
         switch (optype)
         {
